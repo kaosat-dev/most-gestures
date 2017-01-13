@@ -13,12 +13,6 @@ export function preventDefault (event) {
   return event
 }
 
-// for gesture vs touch events
-export function isNotIos (event) {
-  const ios = /iphone|ipod|ipad/.test(window.navigator.userAgent.toLowerCase())
-  return ios === false
-}
-
 export function isMoving (moveDelta, deltaSqr) {
   return true
 /* let distSqr = (moveDelta.x * moveDelta.x + moveDelta.y * moveDelta.y)
