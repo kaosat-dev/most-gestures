@@ -7,7 +7,7 @@
 [![devDependency Status](https://david-dm.org/kaosat-dev/most-gestures/dev-status.svg)](https://david-dm.org/kaosat-dev/most-gestures#info=devDependencies)
 
 
-> unified pointer gestures  using most.js
+> unified high level pointer gestures, using most.js
 
 This is a set of pointer gesture helpers, unifying pointer apis accross browsers & mobile/desktop
 works (and manually tested ) in :
@@ -19,6 +19,7 @@ works (and manually tested ) in :
 It
 - is coded in es6
 - uses most.js observables
+- provides relatively high level tools : ie taps, zooms , dragmoves
 
 ## Table of Contents
 
@@ -52,10 +53,21 @@ const baseInteractions = baseInteractionsFromEvents(element)
 const gestures = pointerGestures(baseInteractions)
 
 //now you can use:
-gestures.taps : tap/click once & release quickly
+/*gestures.taps : tap/click once & release quickly
 gestures.dragMoves: press, keep pressed & move around
 zooms: mouse wheel & pinch zoom alike
-pointerMoves: simple moves
+pointerMoves: simple moves*/
+
+each one of those is an observable , so to react on taps you can do:
+
+gestures.taps.forEach(function(e){
+  console.log('tapped',e)
+  })
+
+// dragMoves also add a few extras to the event
+gestures.dragMoves.forEach(function(e){
+  console.log('tapped',e)
+  })
 ```
 
 ## Contribute
