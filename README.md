@@ -30,11 +30,6 @@ It
 - [Contribute](#contribute)
 - [License](#license)
 
-## Background
-
-- uses the fantastic [regl](https://github.com/mikolalysenko/regl) (declarative stateless rendering)
-- uses the also great [glsify](https://github.com/stackgl/glslify)
-
 ## Installation
 
 
