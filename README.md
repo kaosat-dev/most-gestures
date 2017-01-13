@@ -34,17 +34,16 @@ It
 
 
 ```
-npm install
+npm install most-gestures
 ```
 
 ## Usage
 
-```
+```javascript
 import {baseInteractionsFromEvents, pointerGestures} from 'most-gestures'
 
-const element = document.getelementById("foo")
+const element = document.getElementById("foo")
 const baseInteractions = baseInteractionsFromEvents(element)
-
 const gestures = pointerGestures(baseInteractions)
 
 //now you can use:
@@ -53,15 +52,36 @@ gestures.dragMoves: press, keep pressed & move around
 zooms: mouse wheel & pinch zoom alike
 pointerMoves: simple moves*/
 
-each one of those is an observable , so to react on taps you can do:
-
+//each one of those is an observable , so to react on taps you can do:
 gestures.taps.forEach(function(e){
   console.log('tapped',e)
   })
 
+```
+
+## API
+
+the module exposes two main functions:
+
+#baseInteractionsFromEvents(element)
+&
+#pointerGestures(baseInteractions)
+
+what you are likely interested it is pointerGestures:
+
+- gestures.taps
+- gestures.dragMoves
+- gestures.zooms
+
+they are all most.js observables , so [the power is yours](https://github.com/cujojs/most/blob/master/docs/api.md) !
+
+
+examples :
+
+```javascript
 // dragMoves also add a few extras to the event
 gestures.dragMoves.forEach(function(e){
-  console.log('tapped',e)
+  console.log('dragged',e)
   })
 ```
 
