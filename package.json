@@ -6,15 +6,34 @@
   "module": "src/index.js",
   "scripts": {
     "test": "ava './src/**/*.test.js' --require babel-register --verbose",
-    "build": "babel src/ -d dist --copy-files",
+    "build": "rollup -c rollup.config.js",
     "release-patch": "git checkout master; npm version patch && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
     "release-minor": "git checkout master; npm version minor && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
     "release-major": "git checkout master; npm version major && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags "
   },
   "author": "Mark 'kaosat-dev' Moissette",
   "license": "MIT",
+  "keywords": [
+    "pointer",
+    "gesture",
+    "most.js",
+    "reactive",
+    "observable"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaosat-dev/most-gestures.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kaosat-dev/most-gestures/issues"
+  },
+  "homepage": "https://github.com/kaosat-dev/most-gestures#README",
   "dependencies": {
     "most": "^1.2.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "buba": "^4.0.2",
+    "rollup": "^0.41.2",
+    "rollup-plugin-buba": "^1.0.1"
+  }
 }
