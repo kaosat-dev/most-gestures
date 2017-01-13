@@ -1,0 +1,20 @@
+{
+  "name": "most-gestures",
+  "version": "0.0.1",
+  "description": "unified high level pointer gestures, using most.js",
+  "main": "dist/index.js",
+  "module": "src/index.js",
+  "scripts": {
+    "test": "ava './src/**/*.test.js' --require babel-register --verbose",
+    "build": "babel src/ -d dist --copy-files",
+    "release-patch": "git checkout master; npm version patch && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
+    "release-minor": "git checkout master; npm version minor && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
+    "release-major": "git checkout master; npm version major && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags "
+  },
+  "author": "Mark 'kaosat-dev' Moissette",
+  "license": "MIT",
+  "dependencies": {
+    "most": "^1.2.0"
+  },
+  "devDependencies": {}
+}
