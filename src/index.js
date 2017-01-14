@@ -1,5 +1,6 @@
 import { fromEvent, merge } from 'most'
 import { normalizeWheel, preventDefault } from './utils'
+import { presses } from './presses'
 import { taps } from './taps'
 import { drags } from './drags'
 import { zooms } from './zooms'
@@ -64,7 +65,7 @@ export function baseInteractionsFromEvents (targetEl, options) {
 
 export function pointerGestures (baseInteractions, options) {
   const defaults = {
-    multiClickDelay: 250, // delay between clicks/taps
+    multiTapDelay: 250, // delay between clicks/taps
     longPressDelay: 250, // delay after which we have a 'press'
     maxStaticDeltaSqr: 100, // max 100 pixels delta above which we are not static
     zoomMultiplier: 200, // zoomFactor for normalized interactions across browsers
@@ -73,17 +74,21 @@ export function pointerGestures (baseInteractions, options) {
   }
   const settings = Object.assign({}, defaults, options)
 
-  const taps$ = taps(baseInteractions, settings)
-  const presses$ = taps$ // longTaps: either HELD leftmouse/pointer or HELD right click
+  const press$ = presses(baseInteractions, settings)
+  const holds$ = press$ // longTaps: either HELD leftmouse/pointer or HELD right click
     .filter(e => e.interval > settings.longPressDelay)
     .filter(e => e.moveDelta < settings.maxStaticDeltaSqr) // when the square distance is bigger than this, it is a movement, not a tap
     .map(e => e.value)
+  const taps$ = taps(press$, settings)
   const drags$ = drags(baseInteractions, settings)
   const zooms$ = zooms(baseInteractions, settings)
 
+  //FIXME: use 'press' as higher level above tap & click
+
   return {
+    press: press$,
+    holds: holds$,
     taps: taps$,
-    presses: presses$,
     drags: drags$,
     zooms: zooms$
   }

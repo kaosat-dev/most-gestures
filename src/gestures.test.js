@@ -13,8 +13,9 @@ test.beforeEach(t => {
   t.context = {baseStreams, div}
 })
 
-test.cb('taps (single)', t => {
-  const taps = pointerGestures(t.context.baseStreams).taps
+
+test.cb('presses', t => {
+  const press = pointerGestures(t.context.baseStreams).press
 
   const div = t.context.div
   const mousedown = new window.Event('mousedown')
@@ -25,37 +26,107 @@ test.cb('taps (single)', t => {
     div.dispatchEvent(mouseup)
   }, 100)
 
-  taps
+  press
     .forEach(function () {
       t.pass()
       t.end()
     })
 })
 
-/*
-test.cb('taps (multi)', t => {
+test.cb('taps (2 taps)', t => {
   const taps = pointerGestures(t.context.baseStreams).taps
 
   const div = t.context.div
-  const mousedown = new window.Event('')
-  const mouseup = new window.Event('')
-  mousedown.initEvent('mousedown', null, null)
-  mouseup.initEvent('mouseup', null, null)
+  let mousedown = new window.Event('mousedown')
+  let mouseup = new window.Event('mouseup')
+
   setTimeout(function () {
-    div.dispatchEvent(mousedown)
-    div.dispatchEvent(mouseup)
+    mousedown.offsetX = 3
+    mousedown.offsetY = -10
+    mousedown.clientX = 3
+    mousedown.clientY = -10
+    mouseup.offsetX = 10
+    mouseup.offsetY = -3
+    mouseup.clientX = 10
+    mouseup.clientY = -3
     div.dispatchEvent(mousedown)
     div.dispatchEvent(mouseup)
   }, 100)
 
-  const taps$ = taps.taps$
-  taps$
+  setTimeout(function(){
+    mousedown.offsetX = 13
+    mousedown.offsetY = -4
+    mousedown.clientX = 13
+    mousedown.clientY = -4
+    mouseup.offsetX = 14
+    mouseup.offsetY = -2
+    mouseup.clientX = 14
+    mouseup.clientY = -2
+    div.dispatchEvent(mousedown)
+    div.dispatchEvent(mouseup)
+  }, 200)
+
+  taps
     .forEach(function (e) {
-      console.log('eee',e)
-      t.pass()
-      //t.end()
+      t.deepEqual(e.nb, 2)
+      t.deepEqual(e.list.length, 2)
+      t.end()
     })
-})*/
+})
+
+test.cb('taps (3 taps)', t => {
+  const taps = pointerGestures(t.context.baseStreams).taps
+
+  const div = t.context.div
+  let mousedown = new window.Event('mousedown')
+  let mouseup = new window.Event('mouseup')
+
+  setTimeout(function () {
+    mousedown.offsetX = 3
+    mousedown.offsetY = -10
+    mousedown.clientX = 3
+    mousedown.clientY = -10
+    mouseup.offsetX = 10
+    mouseup.offsetY = -3
+    mouseup.clientX = 10
+    mouseup.clientY = -3
+    div.dispatchEvent(mousedown)
+    div.dispatchEvent(mouseup)
+  }, 100)
+
+  setTimeout(function(){
+    mousedown.offsetX = 13
+    mousedown.offsetY = -4
+    mousedown.clientX = 13
+    mousedown.clientY = -4
+    mouseup.offsetX = 14
+    mouseup.offsetY = -2
+    mouseup.clientX = 14
+    mouseup.clientY = -2
+    div.dispatchEvent(mousedown)
+    div.dispatchEvent(mouseup)
+  }, 200)
+
+  setTimeout(function(){
+    mousedown.offsetX = 11
+    mousedown.offsetY = -2
+    mousedown.clientX = 11
+    mousedown.clientY = -2
+    mouseup.offsetX = 14
+    mouseup.offsetY = -2
+    mouseup.clientX = 14
+    mouseup.clientY = -2
+    div.dispatchEvent(mousedown)
+    div.dispatchEvent(mouseup)
+  }, 300)
+
+  taps
+    .forEach(function (e) {
+      t.deepEqual(e.nb, 3)
+      t.deepEqual(e.list.length, 3)
+      t.end()
+    })
+})
 
 test.cb('zooms (from wheel event)', t => {
   const zooms = pointerGestures(t.context.baseStreams).zooms
