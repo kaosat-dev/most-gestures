@@ -1,0 +1,55 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.repeat = undefined;
+exports.preventDefault = preventDefault;
+exports.isMoving = isMoving;
+exports.normalizeWheel = normalizeWheel;
+exports.exists = exists;
+
+var _most = require('most');
+
+// for most.js
+var repeat = exports.repeat = function repeat(n, stream) {
+  return n === 0 ? (0, _most.empty)() : n === 1 ? stream : (0, _most.continueWith)(function () {
+    return repeat(n - 1, stream);
+  }, stream);
+};
+
+// see https://github.com/cujojs/most/issues/20
+
+// this is in another package/module normally
+function preventDefault(event) {
+  event.preventDefault();
+  return event;
+}
+
+function isMoving(moveDelta, deltaSqr) {
+  return true;
+  /* let distSqr = (moveDelta.x * moveDelta.x + moveDelta.y * moveDelta.y)
+  let isMoving = (distSqr > deltaSqr)
+  // console.log("moving",isMoving)
+  return isMoving*/
+}
+
+function normalizeWheel(event) {
+  var delta = { x: 0, y: 0 };
+  if (event.wheelDelta) {
+    // WebKit / Opera / Explorer 9
+    delta = event.wheelDelta;
+  } else if (event.detail) {
+    // Firefox older
+    delta = -event.detail;
+  } else if (event.deltaY) {
+    // Firefox
+    delta = -event.deltaY;
+  }
+  delta = delta >= 0 ? 1 : -1;
+  return delta;
+}
+
+function exists(data) {
+  return data !== null && data !== undefined;
+}
