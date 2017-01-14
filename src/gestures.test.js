@@ -1,6 +1,5 @@
 import test from 'ava'
-import { taps } from './taps'
-import { baseInteractionsFromEvents, pointerGestures } from '../dist/index'
+import { baseInteractionsFromEvents, pointerGestures } from './index'
 import browserEnv from 'browser-env'
 browserEnv()
 
@@ -26,8 +25,7 @@ test.cb('taps (single)', t => {
     div.dispatchEvent(mouseup)
   }, 100)
 
-  const taps$ = taps.taps$
-  taps$
+  taps
     .forEach(function () {
       t.pass()
       t.end()
