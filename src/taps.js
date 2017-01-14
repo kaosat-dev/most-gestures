@@ -2,11 +2,11 @@ import { just, merge, empty } from 'most'
 import { exists } from './utils'
 /* alternative "clicks" (ie mouseDown -> mouseUp ) implementation, with more fine
 grained control*/
-function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$, touchMoves$}, settings) {
+function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touchEnds$, touchMoves$}, settings) {
   const {maxStaticDeltaSqr} = settings
 
-  const starts$ = merge(mouseDowns$, touchStart$) // mouse & touch interactions starts
-  const ends$ = merge(mouseUps$, touchEnd$) // mouse & touch interactions ends
+  const starts$ = merge(mouseDowns$, touchStarts$) // mouse & touch interactions starts
+  const ends$ = merge(mouseUps$, touchEnds$) // mouse & touch interactions ends
   const moves$ = merge(mouseMoves$, touchMoves$)
   // only doing any "clicks if the time between mDOWN and mUP is below longpressDelay"
   // any small mouseMove is ignored (shaky hands)
@@ -17,7 +17,7 @@ function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$,
       return merge(
         just(downEvent),
         moves$ // Skip if we get a movement before a mouse up
-          .tap(e => console.log('e.delta', JSON.stringify(e)))
+          //.tap(e => console.log('e.delta', JSON.stringify(e)))
           .filter(data => isMoving(data.delta, maxStaticDeltaSqr)) // allow for small movement (shaky hands!) FIXME: implement
           .take(1).flatMap(x => empty()).timestamp(),
         ends$.take(1).timestamp()

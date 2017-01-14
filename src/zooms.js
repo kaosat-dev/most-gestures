@@ -1,4 +1,5 @@
-//this one is not reliable enough
+import { merge } from 'most'
+// this one is not reliable enough
 export function pinchZooms_old (gestureChange$, gestureStart$, gestureEnd$) {
   return gestureStart$
     .flatMap(function (gs) {
@@ -23,19 +24,18 @@ export function pinchZooms_old (gestureChange$, gestureStart$, gestureEnd$) {
     }).tap(e => console.log('pinchZooms', e))
 }
 
-
-export function pinchZooms (touchStart$, touchMoves$, touchEnd$) {
-  const threshold = 4000 // The minimum amount in pixels the inputs must move until it is fired.
+export function pinchZooms ({touchStarts$, touchMoves$, touchEnds$}, settings) {
+  const {pixelRatio, pinchThreshold} = settings
   // generic custom gesture handling
   // very very vaguely based on http://stackoverflow.com/questions/11183174/simplest-way-to-detect-a-pinch
-  return touchStart$
+  return touchStarts$
     .filter(t => t.touches.length === 2)
     .flatMap(function (ts) {
-      let startX1 = ts.touches[0].pageX * window.devicePixelRatio
-      let startY1 = ts.touches[0].pageY * window.devicePixelRatio
+      let startX1 = ts.touches[0].pageX * pixelRatio
+      let startY1 = ts.touches[0].pageY * pixelRatio
 
-      let startX2 = ts.touches[1].pageX * window.devicePixelRatio
-      let startY2 = ts.touches[1].pageY * window.devicePixelRatio
+      let startX2 = ts.touches[1].pageX * pixelRatio
+      let startY2 = ts.touches[1].pageY * pixelRatio
 
       const startDist = ((startX1 - startX2) * (startX1 - startX2)) + ((startY1 - startY2) * (startY1 - startY2))
 
@@ -43,18 +43,18 @@ export function pinchZooms (touchStart$, touchMoves$, touchEnd$) {
         .tap(e => e.preventDefault())
         .filter(t => t.touches.length === 2)
         .map(function (e) {
-          let curX1 = e.touches[0].pageX * window.devicePixelRatio
-          let curY1 = e.touches[0].pageY * window.devicePixelRatio
+          let curX1 = e.touches[0].pageX * pixelRatio
+          let curY1 = e.touches[0].pageY * pixelRatio
 
-          let curX2 = e.touches[1].pageX * window.devicePixelRatio
-          let curY2 = e.touches[1].pageY * window.devicePixelRatio
+          let curX2 = e.touches[1].pageX * pixelRatio
+          let curY2 = e.touches[1].pageY * pixelRatio
 
           const currentDist = ((curX1 - curX2) * (curX1 - curX2)) + ((curY1 - curY2) * (curY1 - curY2))
           return currentDist
         })
         .loop(function (prev, cur) {
           if (prev) {
-            if (Math.abs(cur - prev) < threshold) {
+            if (Math.abs(cur - prev) < pinchThreshold) {
               return {seed: cur, value: undefined}
             }
             return {seed: cur, value: cur - prev}
@@ -67,6 +67,18 @@ export function pinchZooms (touchStart$, touchMoves$, touchEnd$) {
           const scale = e > 0 ? Math.sqrt(e) : -Math.sqrt(Math.abs(e))
           return scale
         })*/
-        .takeUntil(touchEnd$)
+        .takeUntil(touchEnds$)
     })
+}
+
+export function zooms ({touchStarts$, touchMoves$, touchEnds$}, settings) {
+  const zooms$ = merge(
+    merge(
+      // pinchZooms(gestureChange$, gestureStart$, gestureEnd$),// for Ios
+      pinchZooms({touchStarts$, touchMoves$, touchEnds$}, settings) // for Android (no gestureXX events)
+    ),
+    wheel$
+  )
+    .map(x => x * settings.zoomMultiplier)
+  return zooms$
 }

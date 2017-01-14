@@ -34,6 +34,6 @@ export function normalizeWheel (event) {
   return delta
 }
 
-export function exists(data){
+export function exists (data) {
   return data !== null && data !== undefined
 }
