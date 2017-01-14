@@ -7,7 +7,7 @@
 [![devDependency Status](https://david-dm.org/kaosat-dev/most-gestures/dev-status.svg)](https://david-dm.org/kaosat-dev/most-gestures#info=devDependencies)
 
 
-> unified high level pointer gestures, using most.js
+> unified desktop/mobile high level pointer gestures, using most.js
 
 This is a set of pointer gesture helpers, unifying pointer apis accross browsers & mobile/desktop
 works (and manually tested ) in :
@@ -69,7 +69,9 @@ the module exposes two main functions:
 
 what you are likely interested it is pointerGestures:
 
+- gestures.presses (used as a basis for the two below)
 - gestures.taps
+- gestures.holds
 - gestures.drags
 - gestures.zooms
 
@@ -84,6 +86,17 @@ gestures.drags.forEach(function(e){
   console.log('dragged',e)
   })
 ```
+
+### custom gestures:
+
+you can also easily define your custom gestures, based on the existing ones: using
+map, filter etc on the observables
+
+```javascript
+const singleTaps$ = taps$.filter(x => x.nb === 1).map(e => e.list).map(e => e[0])
+const doubleTaps$ = taps$.filter(x => x.nb === 2).map(e => e.list).map(e => e[0])
+```
+
 
 ## Contribute
 
