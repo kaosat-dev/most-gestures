@@ -1,5 +1,5 @@
 import { just, merge, empty } from 'most'
-
+import { exists } from './utils'
 /* alternative "clicks" (ie mouseDown -> mouseUp ) implementation, with more fine
 grained control*/
 function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$, touchMoves$}, settings) {
@@ -36,11 +36,11 @@ function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStart$, touchEnd$,
       }
       return {seed: acc, value: result}
     }, [])
-    .filter(e => e !== undefined)
+    .filter(exists)
     .multicast()
 }
 
-export default function taps (baseInteractions, settings) {
+export function taps (baseInteractions, settings) {
   const taps$ = baseTaps(baseInteractions, settings)
   const {longPressDelay, multiClickDelay, maxStaticDeltaSqr} = settings
 
@@ -58,7 +58,7 @@ export default function taps (baseInteractions, settings) {
         }
         return {seed, value}
       }, [])
-      .filter(x => x !== undefined)
+      .filter(exists)
 
   /*const baseBuffer$ =
     obsToBuffer.scan(function (acc, current) {
@@ -117,7 +117,7 @@ export default function taps (baseInteractions, settings) {
       }
       return {seed, value}
     }, [])
-    .filter(x => x !== undefined)
+    .filter(exists)
     // .buffer(function () { return taps$.debounce(multiClickDelay) })// buffer all inputs, and emit at then end of multiClickDelay
     .map(list => ({list: list, nb: list.length}))
     .multicast()
