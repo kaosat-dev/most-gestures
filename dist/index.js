@@ -10,6 +10,8 @@ var _most = require('most');
 
 var _utils = require('./utils');
 
+var _presses = require('./presses');
+
 var _taps = require('./taps');
 
 var _drags = require('./drags');
@@ -74,7 +76,7 @@ function baseInteractionsFromEvents(targetEl, options) {
 
 function pointerGestures(baseInteractions, options) {
   var defaults = {
-    multiClickDelay: 250, // delay between clicks/taps
+    multiTapDelay: 250, // delay between clicks/taps
     longPressDelay: 250, // delay after which we have a 'press'
     maxStaticDeltaSqr: 100, // max 100 pixels delta above which we are not static
     zoomMultiplier: 200, // zoomFactor for normalized interactions across browsers
@@ -83,11 +85,25 @@ function pointerGestures(baseInteractions, options) {
   };
   var settings = Object.assign({}, defaults, options);
 
-  var taps$ = (0, _taps.taps)(baseInteractions, settings);
+  var press$ = (0, _presses.presses)(baseInteractions, settings);
+  var holds$ = press$ // longTaps: either HELD leftmouse/pointer or HELD right click
+  .filter(function (e) {
+    return e.interval > settings.longPressDelay;
+  }).filter(function (e) {
+    return e.moveDelta < settings.maxStaticDeltaSqr;
+  }) // when the square distance is bigger than this, it is a movement, not a tap
+  .map(function (e) {
+    return e.value;
+  });
+  var taps$ = (0, _taps.taps)(press$, settings);
   var drags$ = (0, _drags.drags)(baseInteractions, settings);
   var zooms$ = (0, _zooms.zooms)(baseInteractions, settings);
 
+  //FIXME: use 'press' as higher level above tap & click
+
   return {
+    press: press$,
+    holds: holds$,
     taps: taps$,
     drags: drags$,
     zooms: zooms$
