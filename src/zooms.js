@@ -71,12 +71,9 @@ export function pinchZooms ({touchStarts$, touchMoves$, touchEnds$}, settings) {
     })
 }
 
-export function zooms ({touchStarts$, touchMoves$, touchEnds$}, settings) {
+export function zooms ({touchStarts$, touchMoves$, touchEnds$, wheel$}, settings) {
   const zooms$ = merge(
-    merge(
-      // pinchZooms(gestureChange$, gestureStart$, gestureEnd$),// for Ios
-      pinchZooms({touchStarts$, touchMoves$, touchEnds$}, settings) // for Android (no gestureXX events)
-    ),
+    pinchZooms({touchStarts$, touchMoves$, touchEnds$}, settings), // for Android (no gestureXX events)
     wheel$
   )
     .map(x => x * settings.zoomMultiplier)

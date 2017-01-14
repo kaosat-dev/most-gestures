@@ -3,6 +3,7 @@ import { exists } from './utils'
 /* alternative "clicks" (ie mouseDown -> mouseUp ) implementation, with more fine
 grained control*/
 function baseTaps ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touchEnds$, touchMoves$}, settings) {
+  touchMoves$ = touchMoves$.filter(t => t.touches.length === 1)
   const {maxStaticDeltaSqr} = settings
 
   const starts$ = merge(mouseDowns$, touchStarts$) // mouse & touch interactions starts

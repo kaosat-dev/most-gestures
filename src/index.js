@@ -17,7 +17,7 @@ export function baseInteractionsFromEvents (targetEl, options) {
   const rightClicks$ = fromEvent('contextmenu', targetEl).tap(preventDefault) // disable the context menu / right click
 
   const touchStarts$ = fromEvent('touchstart', targetEl)
-  const touchMoves$ = fromEvent('touchmove', targetEl).filter(t => t.touches.length === 1)
+  const touchMoves$ = fromEvent('touchmove', targetEl)
   const touchEnds$ = fromEvent('touchend', targetEl)
 
   // const gestureChange$ = fromEvent('gesturechange', targetEl)
@@ -26,7 +26,7 @@ export function baseInteractionsFromEvents (targetEl, options) {
 
   const pointerDowns$ = merge(mouseDowns$, touchStarts$) // mouse & touch interactions starts
   const pointerUps$ = merge(mouseUps$, touchEnds$) // mouse & touch interactions ends
-  const pointerMoves$ = merge(mouseMoves$, touchMoves$)
+  const pointerMoves$ = merge(mouseMoves$, touchMoves$.filter(t => t.touches.length === 1))
 
   function preventScroll (targetEl) {
     fromEvent('mousewheel', targetEl).forEach(preventDefault)
@@ -80,7 +80,6 @@ export function pointerGestures (baseInteractions, options) {
   return {
     taps: taps$,
     drags: drags$,
-    zooms: zooms$,
-    pointerMoves: baseInteractions.pointerMoves$
+    zooms: zooms$
   }
 }

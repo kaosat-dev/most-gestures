@@ -71,8 +71,9 @@ export function touchDrags (touchStarts$, touchEnds$, touchMoves$, settings) {
 
 /* drag move interactions press & move(continuously firing)
 */
-export function dragMoves ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touchEnds$, longTaps$, touchMoves$}, settings) {
-  const dragMoves$ = merge(
+export function drags ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touchEnds$, longTaps$, touchMoves$}, settings) {
+  touchMoves$ = touchMoves$.filter(t => t.touches.length === 1)
+  const drags$ = merge(
     mouseDrags(mouseDowns$, mouseUps$, mouseMoves$, settings),
     touchDrags(touchStarts$, touchEnds$, touchMoves$, settings)
   )
@@ -81,5 +82,5 @@ export function dragMoves ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, t
 
   // .takeUntil(longTaps$) // .repeat() // no drag moves if there is a context action already taking place
 
-  return dragMoves$
+  return drags$
 }
