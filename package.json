@@ -6,7 +6,8 @@
   "module": "src/index.js",
   "scripts": {
     "test": "ava './src/**/*.test.js' --require babel-register --verbose",
-    "build": "rollup -c rollup.config.js",
+    "build-old": "rollup -c rollup.config.js",
+    "build": "babel src/ -d dist",
     "release-patch": "git checkout master; npm version patch && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
     "release-minor": "git checkout master; npm version minor && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
     "release-major": "git checkout master; npm version major && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags "
@@ -32,6 +33,8 @@
     "most": "^1.2.0"
   },
   "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-cli": "^6.18.0",
     "buba": "^4.0.2",
     "rollup": "^0.41.2",
     "rollup-plugin-buba": "^1.0.1"
