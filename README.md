@@ -19,7 +19,7 @@ works (and manually tested ) in :
 It
 - is coded in es6
 - uses most.js observables
-- provides relatively high level tools : ie taps, zooms , dragmoves
+- provides relatively high level tools : ie taps, zooms , drags
 
 ## Table of Contents
 
@@ -48,7 +48,7 @@ const gestures = pointerGestures(baseInteractions)
 
 //now you can use:
 /*gestures.taps : tap/click once & release quickly
-gestures.dragMoves: press, keep pressed & move around
+gestures.drags: press, keep pressed & move around
 zooms: mouse wheel & pinch zoom alike
 pointerMoves: simple moves*/
 
@@ -70,7 +70,7 @@ the module exposes two main functions:
 what you are likely interested it is pointerGestures:
 
 - gestures.taps
-- gestures.dragMoves
+- gestures.drags
 - gestures.zooms
 
 they are all most.js observables , so [the power is yours](https://github.com/cujojs/most/blob/master/docs/api.md) !
@@ -80,7 +80,7 @@ examples :
 
 ```javascript
 // dragMoves also add a few extras to the event
-gestures.dragMoves.forEach(function(e){
+gestures.drags.forEach(function(e){
   console.log('dragged',e)
   })
 ```
