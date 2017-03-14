@@ -35,7 +35,7 @@ function basePresses(_ref, settings) {
     return (0, _most.merge)((0, _most.just)(downEvent), moves$ // Skip if we get a movement before a mouse up
     //.tap(e => console.log('e.delta', JSON.stringify(e)))
     .filter(function (data) {
-      return isMoving(data.delta, maxStaticDeltaSqr);
+      return (0, _utils.isMoving)(data.delta, maxStaticDeltaSqr);
     }) // allow for small movement (shaky hands!) FIXME: implement
     .take(1).flatMap(function (x) {
       return (0, _most.empty)();

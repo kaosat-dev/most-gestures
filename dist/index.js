@@ -20,7 +20,8 @@ var _zooms = require('./zooms');
 
 function baseInteractionsFromEvents(targetEl, options) {
   var defaults = {
-    preventScroll: true
+    preventScroll: true,
+    captureRightClicks: false
   };
   options = Object.assign({}, defaults, options);
 

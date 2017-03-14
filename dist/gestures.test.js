@@ -36,7 +36,7 @@ _ava2.default.cb('presses', function (t) {
   }, 100);
 
   press.forEach(function () {
-    t.pass();
+    _ava2.default.todo('the test is not implemented correctly yet !'); //pass()
     t.end();
   });
 });
