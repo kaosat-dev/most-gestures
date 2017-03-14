@@ -28,7 +28,7 @@ test.cb('presses', t => {
 
   press
     .forEach(function () {
-      t.pass()
+      test.todo('the test is not implemented correctly yet !')//pass()
       t.end()
     })
 })
