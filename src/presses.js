@@ -1,5 +1,5 @@
 import { just, merge, empty } from 'most'
-import { exists } from './utils'
+import { exists, isMoving } from './utils'
 /* alternative "clicks" (ie mouseDown -> mouseUp ) implementation, with more fine
 grained control*/
 function basePresses ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touchEnds$, touchMoves$}, settings) {

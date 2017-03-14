@@ -13,6 +13,7 @@ export function preventDefault (event) {
   return event
 }
 
+/* determine if distance was 'enough' to consider it a ...movement*/
 export function isMoving (moveDelta, deltaSqr) {
   return true
 /* let distSqr = (moveDelta.x * moveDelta.x + moveDelta.y * moveDelta.y)
