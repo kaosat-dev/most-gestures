@@ -1,12 +1,18 @@
 import { exists } from './utils'
 
+/**
+ * tap on screen , either via gestures or clicks,
+ * IF the movement was short (settable)
+ * AND there was little movement only (settable)
+ * @param  {Number} longPressDelay any tap shorter than this time is a short one
+ * @param  {Number} maxStaticDeltaSqr  when the square distance is bigger than this, it is a movement, not a tap
+ * @param  {Number} multiTapDelay  delay between taps for multi tap detection
+ */
 export function taps (presses$, settings) {
   const {longPressDelay, maxStaticDeltaSqr, multiTapDelay} = settings
   const taps$ = presses$
-    .filter(e => e.interval <= longPressDelay) // any tap shorter than this time is a short one
-    .filter(e => e.moveDelta < maxStaticDeltaSqr) // when the square distance is bigger than this, it is a movement, not a tap
-    .map(e => e.value)
-    //.filter(event => ('button' in event && event.button === 0)) // FIXME : bad filter , excludes mobile ?!
+    .filter(e => e.timeDelta <= longPressDelay) // any tap shorter than this time is a short one
+    .filter(e => e.moveDelta.sqrd < maxStaticDeltaSqr) // when the square distance is bigger than this, it is a movement, not a tap
     .map(data => ({type: 'data', data}))
     .merge(presses$.debounce(multiTapDelay).map(data => ({type: 'reset'})))
     .loop(function (seed, {type, data}) {
