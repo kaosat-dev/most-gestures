@@ -75,10 +75,10 @@ export function pointerGestures (baseInteractions, options) {
   const settings = Object.assign({}, defaults, options)
 
   const press$ = presses(baseInteractions, settings)
-  const holds$ = press$ // longTaps: either HELD leftmouse/pointer or HELD right click
-    .filter(e => e.interval > settings.longPressDelay)
-    .filter(e => e.moveDelta < settings.maxStaticDeltaSqr) // when the square distance is bigger than this, it is a movement, not a tap
-    .map(e => e.value)
+  const holds$ = press$ // longTaps/holds: either HELD leftmouse/pointer or HELD right click
+    .filter(e => e.timeDelta > settings.longPressDelay)
+    .filter(e => e.moveDelta.sqrd < settings.maxStaticDeltaSqr) // when the square distance is bigger than this, it is a movement, not a tap
+    //.map(e => e.value)
   const taps$ = taps(press$, settings)
   const drags$ = drags(baseInteractions, settings)
   const zooms$ = zooms(baseInteractions, settings)
