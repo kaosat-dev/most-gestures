@@ -64,10 +64,13 @@ gestures.taps.forEach(function(e){
 
 the module exposes two main functions:
 
-#baseInteractionsFromEvents(element)
+### baseInteractionsFromEvents(element)
 
+this creates an object containing the low level streams (mouseDowns$, mouseUps$ etc)
+from a DOM element, you usually don't want to use this directly, use the following
+function instead.
 
-#pointerGestures(baseInteractions, options)
+### pointerGestures(baseInteractions, options)
 
 what you are likely interested in, is pointerGestures:
 
@@ -88,11 +91,9 @@ they are all observables , so [the power is yours](https://github.com/cujojs/mos
  - pixelRatio : (default: window.pixelRatio if available)
 
 
-
 examples :
 
 ```javascript
-// dragMoves also add a few extras to the event
 gestures.drags.forEach(function(e){
   console.log('dragged',e)
   })
