@@ -38,3 +38,30 @@ export function normalizeWheel (event) {
 export function exists (data) {
   return data !== null && data !== undefined
 }
+
+
+function bufferUntil (obsToBuffer, obsEnd) {
+  return obsToBuffer
+    .map(data => ({type: 'data', data}))
+    .merge(taps$.debounce(multiTapDelay).map(data => ({type: 'reset'})))
+    .loop(function (seed, {type, data}) {
+      let value
+      if (type === 'data') {
+        seed.push(data)
+      } else {
+        value = seed
+        seed = []
+      }
+      return {seed, value}
+    }, [])
+    .filter(exists)
+
+/* const baseBuffer$ =
+  obsToBuffer.scan(function (acc, current) {
+    acc.push(current)
+    return acc
+}, [])
+
+return baseBuffer$
+  .until(obsEnd) */
+}
