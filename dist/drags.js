@@ -44,9 +44,9 @@ function mouseDrags(mouseDowns$, mouseUps, mouseMoves, settings) {
 function touchDrags(touchStarts$, touchEnds$, touchMoves$, settings) {
   var pixelRatio = settings.pixelRatio;
 
-  return touchStarts$.flatMap(function (ts) {
-    var startX = ts.touches[0].pageX * pixelRatio;
-    var startY = ts.touches[0].pageY * pixelRatio;
+  return touchStarts$.flatMap(function (e) {
+    var startX = e.touches[0].pageX * pixelRatio;
+    var startY = e.touches[0].pageY * pixelRatio;
 
     var prevX = startX;
     var prevY = startY;
@@ -55,12 +55,9 @@ function touchDrags(touchStarts$, touchEnds$, touchMoves$, settings) {
       var curX = e.touches[0].pageX * pixelRatio;
       var curY = e.touches[0].pageY * pixelRatio;
 
-      var x = curX - startX;
-      var y = curY - startY;
-
       var delta = {
-        left: x,
-        top: y,
+        left: curX - startX,
+        top: curY - startY,
         x: prevX - curX,
         y: curY - prevY
       };
@@ -68,7 +65,6 @@ function touchDrags(touchStarts$, touchEnds$, touchMoves$, settings) {
       prevX = curX;
       prevY = curY;
 
-      // let output = assign({}, e, {delta})
       var normalized = { x: curX, y: curY };
       return { mouseEvent: e, delta: delta, normalized: normalized, type: 'touch' };
     }).takeUntil(touchEnds$);

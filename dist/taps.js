@@ -7,21 +7,25 @@ exports.taps = taps;
 
 var _utils = require('./utils');
 
+/**
+ * tap on screen , either via gestures or clicks,
+ * IF the movement was short (settable)
+ * AND there was little movement only (settable)
+ * @param  {Number} longPressDelay any tap shorter than this time is a short one
+ * @param  {Number} maxStaticDeltaSqr  when the square distance is bigger than this, it is a movement, not a tap
+ * @param  {Number} multiTapDelay  delay between taps for multi tap detection
+ */
 function taps(presses$, settings) {
   var longPressDelay = settings.longPressDelay,
       maxStaticDeltaSqr = settings.maxStaticDeltaSqr,
       multiTapDelay = settings.multiTapDelay;
 
   var taps$ = presses$.filter(function (e) {
-    return e.interval <= longPressDelay;
+    return e.timeDelta <= longPressDelay;
   }) // any tap shorter than this time is a short one
   .filter(function (e) {
-    return e.moveDelta < maxStaticDeltaSqr;
+    return e.moveDelta.sqrd < maxStaticDeltaSqr;
   }) // when the square distance is bigger than this, it is a movement, not a tap
-  .map(function (e) {
-    return e.value;
-  })
-  //.filter(event => ('button' in event && event.button === 0)) // FIXME : bad filter , excludes mobile ?!
   .map(function (data) {
     return { type: 'data', data: data };
   }).merge(presses$.debounce(multiTapDelay).map(function (data) {

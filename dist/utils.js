@@ -54,3 +54,32 @@ function normalizeWheel(event) {
 function exists(data) {
   return data !== null && data !== undefined;
 }
+
+function bufferUntil(obsToBuffer, obsEnd) {
+  return obsToBuffer.map(function (data) {
+    return { type: 'data', data: data };
+  }).merge(taps$.debounce(multiTapDelay).map(function (data) {
+    return { type: 'reset' };
+  })).loop(function (seed, _ref) {
+    var type = _ref.type,
+        data = _ref.data;
+
+    var value = void 0;
+    if (type === 'data') {
+      seed.push(data);
+    } else {
+      value = seed;
+      seed = [];
+    }
+    return { seed: seed, value: value };
+  }, []).filter(exists);
+
+  /* const baseBuffer$ =
+    obsToBuffer.scan(function (acc, current) {
+      acc.push(current)
+      return acc
+  }, [])
+  
+  return baseBuffer$
+    .until(obsEnd) */
+}

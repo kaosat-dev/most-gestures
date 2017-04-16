@@ -20,8 +20,7 @@ var _zooms = require('./zooms');
 
 function baseInteractionsFromEvents(targetEl, options) {
   var defaults = {
-    preventScroll: true,
-    captureRightClicks: false
+    preventScroll: true
   };
   options = Object.assign({}, defaults, options);
 
@@ -87,15 +86,13 @@ function pointerGestures(baseInteractions, options) {
   var settings = Object.assign({}, defaults, options);
 
   var press$ = (0, _presses.presses)(baseInteractions, settings);
-  var holds$ = press$ // longTaps: either HELD leftmouse/pointer or HELD right click
+  var holds$ = press$ // longTaps/holds: either HELD leftmouse/pointer or HELD right click
   .filter(function (e) {
-    return e.interval > settings.longPressDelay;
+    return e.timeDelta > settings.longPressDelay;
   }).filter(function (e) {
-    return e.moveDelta < settings.maxStaticDeltaSqr;
-  }) // when the square distance is bigger than this, it is a movement, not a tap
-  .map(function (e) {
-    return e.value;
-  });
+    return e.moveDelta.sqrd < settings.maxStaticDeltaSqr;
+  }); // when the square distance is bigger than this, it is a movement, not a tap
+  //.map(e => e.value)
   var taps$ = (0, _taps.taps)(press$, settings);
   var drags$ = (0, _drags.drags)(baseInteractions, settings);
   var zooms$ = (0, _zooms.zooms)(baseInteractions, settings);
