@@ -66,8 +66,8 @@ export function baseInteractionsFromEvents (targetEl, options) {
 export function pointerGestures (baseInteractions, options) {
   const defaults = {
     multiTapDelay: 250, // delay between clicks/taps
-    longPressDelay: 250, // delay after which we have a 'press'
-    maxStaticDeltaSqr: 100, // max 100 pixels delta above which we are not static
+    longPressDelay: 250, // delay after which we have a 'hold'
+    maxStaticDeltaSqr: 100, // maximum delta (in pixels squared) above which we are not static
     zoomMultiplier: 200, // zoomFactor for normalized interactions across browsers
     pinchThreshold: 4000, // The minimum amount in pixels the inputs must move until it is fired.
     pixelRatio: (typeof window !== 'undefined' && window.devicePixelRatio) ? window.devicePixelRatio : 1
