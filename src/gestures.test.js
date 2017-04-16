@@ -13,7 +13,6 @@ test.beforeEach(t => {
   t.context = {baseStreams, div}
 })
 
-
 test.cb('presses', t => {
   const press = pointerGestures(t.context.baseStreams).press
 
@@ -21,14 +20,14 @@ test.cb('presses', t => {
   const mousedown = new window.Event('mousedown')
   const mouseup = new window.Event('mouseup')
 
-  setTimeout(function () {
+  setTimeout(() => {
     div.dispatchEvent(mousedown)
     div.dispatchEvent(mouseup)
   }, 100)
 
   press
-    .forEach(function () {
-      test.todo('the test is not implemented correctly yet !')//pass()
+    .forEach(() => {
+      test.todo('the test is not implemented correctly yet !')// pass()
       t.end()
     })
 })
@@ -40,31 +39,23 @@ test.cb('taps (2 taps)', t => {
   let mousedown = new window.Event('mousedown')
   let mouseup = new window.Event('mouseup')
 
-  setTimeout(function () {
-    mousedown.offsetX = 3
-    mousedown.offsetY = -10
-    mousedown.clientX = 3
-    mousedown.clientY = -10
-    mouseup.offsetX = 10
-    mouseup.offsetY = -3
-    mouseup.clientX = 10
-    mouseup.clientY = -3
+  setTimeout(() => {
+    mousedown.pageX = 3
+    mousedown.pageY = -10
+    mouseup.pageX = 10
+    mouseup.pageY = -3
+    div.dispatchEvent(mousedown)
+    div.dispatchEvent(mouseup)
+  }, 10)
+
+  setTimeout(() => {
+    mousedown.pageX = 13
+    mousedown.pageY = -4
+    mouseup.pageX = 14
+    mouseup.pageY = -2
     div.dispatchEvent(mousedown)
     div.dispatchEvent(mouseup)
   }, 100)
-
-  setTimeout(function(){
-    mousedown.offsetX = 13
-    mousedown.offsetY = -4
-    mousedown.clientX = 13
-    mousedown.clientY = -4
-    mouseup.offsetX = 14
-    mouseup.offsetY = -2
-    mouseup.clientX = 14
-    mouseup.clientY = -2
-    div.dispatchEvent(mousedown)
-    div.dispatchEvent(mouseup)
-  }, 200)
 
   taps
     .forEach(function (e) {
@@ -81,33 +72,25 @@ test.cb('taps (3 taps)', t => {
   let mousedown = new window.Event('mousedown')
   let mouseup = new window.Event('mouseup')
 
-  setTimeout(function () {
-    mousedown.offsetX = 3
-    mousedown.offsetY = -10
-    mousedown.clientX = 3
-    mousedown.clientY = -10
-    mouseup.offsetX = 10
-    mouseup.offsetY = -3
-    mouseup.clientX = 10
-    mouseup.clientY = -3
+  setTimeout(() => {
+    mousedown.pageX = 3
+    mousedown.pageY = -10
+    mouseup.pageX = 10
+    mouseup.pageY = -3
     div.dispatchEvent(mousedown)
     div.dispatchEvent(mouseup)
   }, 100)
 
-  setTimeout(function(){
-    mousedown.offsetX = 13
-    mousedown.offsetY = -4
-    mousedown.clientX = 13
-    mousedown.clientY = -4
-    mouseup.offsetX = 14
-    mouseup.offsetY = -2
-    mouseup.clientX = 14
-    mouseup.clientY = -2
+  setTimeout(() => {
+    mousedown.pageX = 13
+    mousedown.pageY = -4
+    mouseup.pageX = 14
+    mouseup.pageY = -2
     div.dispatchEvent(mousedown)
     div.dispatchEvent(mouseup)
   }, 200)
 
-  setTimeout(function(){
+  setTimeout(() => {
     mousedown.offsetX = 11
     mousedown.offsetY = -2
     mousedown.clientX = 11
@@ -133,7 +116,7 @@ test.cb('zooms (from wheel event)', t => {
 
   const div = t.context.div
   const wheel = new window.Event('wheel')
-  setTimeout(function () {
+  setTimeout(() => {
     div.dispatchEvent(wheel)
   }, 100)
 
@@ -149,7 +132,7 @@ test.cb('zooms (from mousewheel event)', t => {
 
   const div = t.context.div
   const wheel = new window.Event('mousewheel')
-  setTimeout(function () {
+  setTimeout(() => {
     div.dispatchEvent(wheel)
   }, 100)
 
@@ -168,7 +151,7 @@ test.cb('zooms (from pinch)', t => {
   const touchmove = new window.Event('touchmove')
   const touchend = new window.Event('touchend')
 
-  setTimeout(function () {
+  setTimeout(() => {
     touchstart.touches = [{pageX: 3, pageY: -10}, {pageX: 43, pageY: 0}]
     touchmove.touches = [{pageX: 44, pageY: -2}, {pageX: 244, pageY: 122}]
     touchend.touches = [{pageX: 144, pageY: -22}, {pageX: 644, pageY: 757}]
@@ -192,7 +175,7 @@ test.cb('drags (mouse)', t => {
   const mouseup = new window.Event('mouseup')
   const mousemove = new window.Event('mousemove')
 
-  setTimeout(function () {
+  setTimeout(() => {
     mousedown.offsetX = 3
     mousedown.offsetY = -10
     mousedown.clientX = 3
@@ -236,7 +219,7 @@ test.cb('drags (touch)', t => {
   const touchmove = new window.Event('touchmove')
   const touchend = new window.Event('touchend')
 
-  setTimeout(function () {
+  setTimeout(() => {
     touchstart.touches = [{pageX: 3, pageY: -10}]
     touchmove.touches = [{pageX: 44, pageY: -2}]
     touchend.touches = [{pageX: 144, pageY: -22}]
