@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "module": "src/index.js",
   "scripts": {
-    "test": "ava './src/**/*.test.js' --require babel-register  --verbose --timeout 10000",
+    "test": "ava './src/**/*.test.js' --require babel-register  --verbose --timeout 30000",
     "build-old": "rollup -c rollup.config.js",
     "build": "babel --presets es2015 src/ -d dist",
     "release-patch": "git checkout master; npm run build && npm version patch && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
