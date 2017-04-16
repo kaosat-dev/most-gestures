@@ -1,10 +1,10 @@
 import { just, merge, empty } from 'most'
 import { exists, isMoving } from './utils'
 /* alternative "clicks" (ie mouseDown -> mouseUp ) implementation, with more fine
-grained control*/
+grained control
+*/
 function basePresses ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touchEnds$, touchMoves$}, settings) {
   touchMoves$ = touchMoves$.filter(t => t.touches.length === 1)
-  const {maxStaticDeltaSqr} = settings
 
   const starts$ = merge(mouseDowns$, touchStarts$) // mouse & touch interactions starts
   const ends$ = merge(mouseUps$, touchEnds$) // mouse & touch interactions ends
@@ -12,25 +12,34 @@ function basePresses ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touchE
   // only doing any "clicks if the time between mDOWN and mUP is below longpressDelay"
   // any small mouseMove is ignored (shaky hands)
 
-  return starts$
-    .timestamp()
+  return starts$.timestamp()
     .flatMap(function (downEvent) {
       return merge(
         just(downEvent),
-        moves$ // Skip if we get a movement before a mouse up
-          //.tap(e => console.log('e.delta', JSON.stringify(e)))
-          .filter(data => isMoving(data.delta, maxStaticDeltaSqr)) // allow for small movement (shaky hands!) FIXME: implement
-          .take(1).flatMap(x => empty()).timestamp(),
+        //moves$.take(1).flatMap(x => empty()).timestamp(), // Skip if we get a movement before a mouse up
         ends$.take(1).timestamp()
       )
     })
     .loop(function (acc, current) {
       let result
       if (acc.length === 1) {
-        const interval = current.time - acc[0].time
-        let moveDelta = [current.value.clientX - acc[0].value.offsetX, current.value.clientY - acc[0].value.offsetY] // FIXME: duplicate of mouseDrags !
-        moveDelta = moveDelta[0] * moveDelta[0] + moveDelta[1] * moveDelta[1] // squared distance
-        result = {value: current.value, interval, moveDelta}
+        const timeDelta = current.time - acc[0].time
+
+        const curX = 'touches' in current.value ? current.value.changedTouches[0].pageX : current.value.pageX//* pixelRatio
+        const curY = 'touches' in current.value ? current.value.changedTouches[0].pageY : current.value.pageY//* pixelRatio
+
+        const prevX = 'touches' in acc[0].value ? acc[0].value.touches[0].pageX : acc[0].value.pageX
+        const prevY = 'touches' in acc[0].value ? acc[0].value.touches[0].pageY : acc[0].value.pageY
+
+        let delta = [curX - prevX, curY - prevY] // FIXME: duplicate of mouseDrags !
+        delta = delta[0] * delta[0] + delta[1] * delta[1] // squared distance
+        let moveDelta = {
+          x: prevX - curX,
+          y: curY - prevY,
+          sqrd: delta
+        }
+
+        result = {value: current.value, originalEvent: current.value, timeDelta, moveDelta, x: curX, y: curY}
         acc = []
       } else {
         acc.push(current)
@@ -38,38 +47,14 @@ function basePresses ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touchE
       return {seed: acc, value: result}
     }, [])
     .filter(exists)
+    .filter(x => x.value !== undefined)
     .multicast()
 }
 
 export function presses (baseInteractions, settings) {
   const presses$ = basePresses(baseInteractions, settings)
-  const {longPressDelay, multiTapDelay, maxStaticDeltaSqr} = settings
 
-  function bufferUntil (obsToBuffer, obsEnd) {
-    return obsToBuffer
-      .map(data => ({type: 'data', data}))
-      .merge(taps$.debounce(multiTapDelay).map(data => ({type: 'reset'})))
-      .loop(function (seed, {type, data}) {
-        let value
-        if (type === 'data') {
-          seed.push(data)
-        } else {
-          value = seed
-          seed = []
-        }
-        return {seed, value}
-      }, [])
-      .filter(exists)
 
-  /*const baseBuffer$ =
-    obsToBuffer.scan(function (acc, current) {
-      acc.push(current)
-      return acc
-  }, [])
-
-  return baseBuffer$
-    .until(obsEnd)*/
-  }
   /*
   // exploring of more composition based system : much clearer, but needs work
 
@@ -98,7 +83,7 @@ export function presses (baseInteractions, settings) {
     mapc(first)
   )
 
-  //const tapsByNumber = tapCount => compose(filterc(x => x.nb === tapCount), firstInList())*/
+  //const tapsByNumber = tapCount => compose(filterc(x => x.nb === tapCount), firstInList()) */
 
   return presses$
 }
