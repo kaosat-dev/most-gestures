@@ -50,7 +50,8 @@ const gestures = pointerGestures(baseInteractions)
 /*gestures.taps : tap/click once & release quickly
 gestures.drags: press, keep pressed & move around
 zooms: mouse wheel & pinch zoom alike
-pointerMoves: simple moves*/
+pointerMoves: simple moves
+*/
 
 //each one of those is an observable , so to react on taps you can do:
 gestures.taps.forEach(function(e){
@@ -66,17 +67,26 @@ the module exposes two main functions:
 #baseInteractionsFromEvents(element)
 
 
-#pointerGestures(baseInteractions)
+#pointerGestures(baseInteractions, options)
 
 what you are likely interested in, is pointerGestures:
 
 - gestures.presses (used as a basis for the two below)
-- gestures.taps
-- gestures.holds
-- gestures.drags
-- gestures.zooms
+- gestures.taps : quick press/tap & release
+- gestures.holds : press/tap for a long time (defined by the longPressDelay)& release
+- gestures.drags : press & move before releasing
+- gestures.zooms : pinch , scrollwheel etc
 
-they are all most.js observables , so [the power is yours](https://github.com/cujojs/most/blob/master/docs/api.md) !
+they are all observables , so [the power is yours](https://github.com/cujojs/most/blob/master/docs/api.md) !
+
+**options** allows you to refine the gestures by modifying the following parameters:
+ - multiTapDelay: time in ms between multiple taps
+ - longPressDelay (default: 250) : time in ms after which a **HOLD** is emitted
+ - maxStaticDeltaSqr (default: 100): maximum delta (in pixels squared) above which we consider a pointer to have moved
+ - zoomMultiplier: (default: 200): zoomFactor for normalized interactions across browsers
+ - pinchThreshold: (default: 4000) The minimum amount in pixels squared the inputs must move until it is fired.
+ - pixelRatio : (default: window.pixelRatio if available)
+
 
 
 examples :
