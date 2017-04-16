@@ -64,10 +64,11 @@ gestures.taps.forEach(function(e){
 the module exposes two main functions:
 
 #baseInteractionsFromEvents(element)
-&
+
+
 #pointerGestures(baseInteractions)
 
-what you are likely interested it is pointerGestures:
+what you are likely interested in, is pointerGestures:
 
 - gestures.presses (used as a basis for the two below)
 - gestures.taps
