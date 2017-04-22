@@ -27,7 +27,7 @@ export function mouseDrags (mouseDowns$, mouseUps, mouseMoves, settings) {
         prevY = curY
 
         const normalized = {x: curX, y: curY}
-        return {mouseEvent: e, delta, normalized, type: 'mouse'}
+        return {originalEvents: [e], delta, normalized, type: 'mouse'}
       })
       .takeUntil(mouseUps)
   })
@@ -59,7 +59,7 @@ export function touchDrags (touchStarts$, touchEnds$, touchMoves$, settings) {
           prevY = curY
 
           const normalized = {x: curX, y: curY}
-          return {mouseEvent: e, delta, normalized, type: 'touch'}
+          return {originalEvents: [e], delta, normalized, type: 'touch'}
         })
         .takeUntil(touchEnds$)
     })

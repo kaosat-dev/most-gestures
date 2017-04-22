@@ -199,7 +199,7 @@ test.cb('drags (mouse)', t => {
   drags
     .forEach(function (e) {
       const expEvent = {
-        mouseEvent: {isTrusted: false},
+        originalEvents: [{isTrusted: false}],
         delta: { left: 41, top: 8, x: -41, y: 8 },
         normalized: { x: 44, y: -2 },
         type: 'mouse'
@@ -231,7 +231,7 @@ test.cb('drags (touch)', t => {
   drags
     .forEach(function (e) {
       const expEvent = {
-        mouseEvent: {isTrusted: false},
+        originalEvents: [{isTrusted: false}],
         delta: { left: 41, top: 8, x: -41, y: 8 },
         normalized: { x: 44, y: -2 },
         type: 'touch'
