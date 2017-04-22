@@ -36,7 +36,7 @@ function mouseDrags(mouseDowns$, mouseUps, mouseMoves, settings) {
       prevY = curY;
 
       var normalized = { x: curX, y: curY };
-      return { mouseEvent: e, delta: delta, normalized: normalized, type: 'mouse' };
+      return { originalEvents: [e], delta: delta, normalized: normalized, type: 'mouse' };
     }).takeUntil(mouseUps);
   });
 }
@@ -66,7 +66,7 @@ function touchDrags(touchStarts$, touchEnds$, touchMoves$, settings) {
       prevY = curY;
 
       var normalized = { x: curX, y: curY };
-      return { mouseEvent: e, delta: delta, normalized: normalized, type: 'touch' };
+      return { originalEvents: [e], delta: delta, normalized: normalized, type: 'touch' };
     }).takeUntil(touchEnds$);
   });
 }
