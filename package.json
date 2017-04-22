@@ -1,6 +1,6 @@
 {
   "name": "most-gestures",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "unified desktop/mobile high level pointer gestures, using most.js",
   "main": "dist/index.js",
   "module": "src/index.js",
