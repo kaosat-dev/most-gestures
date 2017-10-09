@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "module": "src/index.js",
   "scripts": {
-    "test": "ava './src/**/*.test.js' --require babel-register  --verbose --timeout 30000",
+    "test": "ava './src/**/*.test.js' --verbose --timeout 30000",
     "build-old": "rollup -c rollup.config.js",
     "build": "babel --presets es2015 src/ -d dist",
     "release-patch": "git checkout master; npm run build && npm version patch && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
@@ -30,18 +30,10 @@
   },
   "homepage": "https://github.com/kaosat-dev/most-gestures#README",
   "dependencies": {
-    "most": "^1.2.0"
+    "most": "^1.7.2"
   },
   "devDependencies": {
-    "ava": "^0.15.2",
-    "babel": "^6.5.2",
-    "babel-cli": "^6.18.0",
-    "babel-core": "^6.21.0",
-    "babel-preset-es2015": "^6.18.0",
-    "babel-register": "^6.24.1",
-    "browser-env": "^2.0.19",
-    "buba": "^4.0.2",
-    "rollup": "^0.41.2",
-    "rollup-plugin-buba": "^1.0.1"
+    "ava": "^0.22.0",
+    "browser-env": "^3.2.1"
   }
 }
