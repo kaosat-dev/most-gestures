@@ -63,7 +63,9 @@ function baseInteractionsFromEvents (targetEl, options) {
     pointerMoves$}
 }
 
-function pointerGestures (baseInteractions, options) {
+function pointerGestures (input, options) {
+  let baseInteractions = 'addEventListener' in input ? baseInteractionsFromEvents(input, options) : input
+
   const defaults = {
     multiTapDelay: 250, // delay between clicks/taps
     longPressDelay: 250, // delay after which we have a 'hold'
