@@ -1,6 +1,7 @@
-import { merge } from 'most'
+const { merge } = require('most')
+
 // this one is not reliable enough
-export function pinchZooms_old (gestureChange$, gestureStart$, gestureEnd$) {
+function pinchZooms_old (gestureChange$, gestureStart$, gestureEnd$) {
   return gestureStart$
     .flatMap(function (gs) {
       return gestureChange$
@@ -24,7 +25,7 @@ export function pinchZooms_old (gestureChange$, gestureStart$, gestureEnd$) {
     }).tap(e => console.log('pinchZooms', e))
 }
 
-export function pinchZooms ({touchStarts$, touchMoves$, touchEnds$}, settings) {
+function pinchZooms ({touchStarts$, touchMoves$, touchEnds$}, settings) {
   const {pixelRatio, pinchThreshold} = settings
   // generic custom gesture handling
   // very very vaguely based on http://stackoverflow.com/questions/11183174/simplest-way-to-detect-a-pinch
@@ -66,12 +67,12 @@ export function pinchZooms ({touchStarts$, touchMoves$, touchEnds$}, settings) {
         /* .map(function (e) {
           const scale = e > 0 ? Math.sqrt(e) : -Math.sqrt(Math.abs(e))
           return scale
-        })*/
+        }) */
         .takeUntil(touchEnds$)
     })
 }
 
-export function zooms ({touchStarts$, touchMoves$, touchEnds$, wheel$}, settings) {
+function zooms ({touchStarts$, touchMoves$, touchEnds$, wheel$}, settings) {
   const zooms$ = merge(
     pinchZooms({touchStarts$, touchMoves$, touchEnds$}, settings), // for Android (no gestureXX events)
     wheel$
@@ -79,3 +80,5 @@ export function zooms ({touchStarts$, touchMoves$, touchEnds$, wheel$}, settings
     .map(x => x * settings.zoomMultiplier)
   return zooms$
 }
+
+module.exports = {pinchZooms, zooms}

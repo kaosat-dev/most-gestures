@@ -1,7 +1,10 @@
-import test from 'ava'
-import { baseInteractionsFromEvents, pointerGestures } from './index'
-import browserEnv from 'browser-env'
+const test = require('ava')
+const { baseInteractionsFromEvents, pointerGestures } = require('./index')
+const browserEnv = require('browser-env')
 browserEnv()
+
+const { fromEvent, merge } = require('most')
+
 
 // NOTE : use   // --inspect --debug-brk to debug node commands in chrome
 test.afterEach.always(t => {
@@ -15,7 +18,6 @@ test.beforeEach(t => {
 
 test.cb('presses', t => {
   const press = pointerGestures(t.context.baseStreams).press
-
   const div = t.context.div
   const mousedown = new window.Event('mousedown')
   const mouseup = new window.Event('mouseup')
@@ -27,7 +29,7 @@ test.cb('presses', t => {
 
   press
     .forEach(() => {
-      test.todo('the test is not implemented correctly yet !')// pass()
+      //TODO: 'the test is not implemented correctly yet !')// pass()
       t.end()
     })
 })
@@ -180,16 +182,22 @@ test.cb('drags (mouse)', t => {
     mousedown.offsetY = -10
     mousedown.clientX = 3
     mousedown.clientY = -10
+    mousedown.pageX = 3
+    mousedown.pageY = -10
 
     mousemove.offsetX = 44
     mousemove.offsetY = -2
     mousemove.clientX = 44
     mousemove.clientY = -2
+    mousemove.pageX = 44
+    mousemove.pageY = -2
 
     mouseup.offsetX = 144
     mouseup.offsetY = -22
     mouseup.clientX = 144
     mouseup.clientY = -22
+    mouseup.pageX = 144
+    mouseup.pageY = -22
 
     div.dispatchEvent(mousedown)
     div.dispatchEvent(mousemove)
