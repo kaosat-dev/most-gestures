@@ -2,15 +2,12 @@
   "name": "most-gestures",
   "version": "0.2.0",
   "description": "unified desktop/mobile high level pointer gestures, using most.js",
-  "main": "dist/index.js",
-  "module": "src/index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "ava './src/**/*.test.js' --verbose --timeout 30000",
-    "build-old": "rollup -c rollup.config.js",
-    "build": "babel --presets es2015 src/ -d dist",
-    "release-patch": "git checkout master; npm run build && npm version patch && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
-    "release-minor": "git checkout master; npm run build && npm version minor && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags ",
-    "release-major": "git checkout master; npm run build && npm version major && npm run build; git commit -a -m 'chore(dist): built dist/'; git push origin master --tags "
+    "release-patch": "git checkout master; npm version patch ; git push origin master --tags ",
+    "release-minor": "git checkout master; npm version minor ; git push origin master --tags ",
+    "release-major": "git checkout master; npm version major ; git push origin master --tags "
   },
   "author": "Mark 'kaosat-dev' Moissette",
   "license": "MIT",
