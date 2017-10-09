@@ -40,8 +40,12 @@ npm install most-gestures
 ## Usage
 
 ```javascript
-import {baseInteractionsFromEvents, pointerGestures} from 'most-gestures'
+import {pointerGestures} from 'most-gestures'
 
+const element = document.getElementById("foo")
+const gestures = pointerGestures(element)
+
+//or alternatively
 const element = document.getElementById("foo")
 const baseInteractions = baseInteractionsFromEvents(element)
 const gestures = pointerGestures(baseInteractions)
@@ -60,6 +64,7 @@ gestures.taps.forEach(function(e){
 
 ```
 
+
 ## API
 
 the module exposes two main functions:
@@ -70,7 +75,9 @@ this creates an object containing the low level streams (mouseDowns$, mouseUps$ 
 from a DOM element, you usually don't want to use this directly, use the following
 function instead.
 
-### pointerGestures(baseInteractions, options)
+### pointerGestures(baseInteractionsOrElement, options)
+
+you can either pass in a reference to a dom element or the output from `baseInteractionsFromEvents(element)`
 
 what you are likely interested in, is pointerGestures:
 
