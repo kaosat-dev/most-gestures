@@ -1,11 +1,11 @@
-import { fromEvent, merge } from 'most'
-import { normalizeWheel, preventDefault } from './utils'
-import { presses } from './presses'
-import { taps } from './taps'
-import { drags } from './drags'
-import { zooms } from './zooms'
+const { fromEvent, merge } = require('most')
+const { normalizeWheel, preventDefault } = require('./utils')
+const { presses } = require('./presses')
+const { taps } = require('./taps')
+const { drags } = require('./drags')
+const { zooms } = require('./zooms')
 
-export function baseInteractionsFromEvents (targetEl, options) {
+function baseInteractionsFromEvents (targetEl, options) {
   const defaults = {
     preventScroll: true
   }
@@ -60,10 +60,10 @@ export function baseInteractionsFromEvents (targetEl, options) {
 
     pointerDowns$,
     pointerUps$,
-  pointerMoves$}
+    pointerMoves$}
 }
 
-export function pointerGestures (baseInteractions, options) {
+function pointerGestures (baseInteractions, options) {
   const defaults = {
     multiTapDelay: 250, // delay between clicks/taps
     longPressDelay: 250, // delay after which we have a 'hold'
@@ -78,12 +78,12 @@ export function pointerGestures (baseInteractions, options) {
   const holds$ = press$ // longTaps/holds: either HELD leftmouse/pointer or HELD right click
     .filter(e => e.timeDelta > settings.longPressDelay)
     .filter(e => e.moveDelta.sqrd < settings.maxStaticDeltaSqr) // when the square distance is bigger than this, it is a movement, not a tap
-    //.map(e => e.value)
+    // .map(e => e.value)
   const taps$ = taps(press$, settings)
   const drags$ = drags(baseInteractions, settings)
   const zooms$ = zooms(baseInteractions, settings)
 
-  //FIXME: use 'press' as higher level above tap & click
+  // FIXME: use 'press' as higher level above tap & click
 
   return {
     press: press$,
@@ -93,3 +93,5 @@ export function pointerGestures (baseInteractions, options) {
     zooms: zooms$
   }
 }
+
+module.exports = {baseInteractionsFromEvents, pointerGestures}

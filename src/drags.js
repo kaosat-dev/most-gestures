@@ -1,20 +1,20 @@
-import { merge } from 'most'
+const { merge } = require('most')
 
 // based on http://jsfiddle.net/mattpodwysocki/pfCqq/
-export function mouseDrags (mouseDowns$, mouseUps, mouseMoves, settings) {
+function mouseDrags (mouseDowns$, mouseUps, mouseMoves, settings) {
   const {pixelRatio} = settings
   return mouseDowns$.flatMap(function (md) {
     // calculate offsets when mouse down
-    let startX = md.offsetX * pixelRatio
-    let startY = md.offsetY * pixelRatio
+    let startX = md.pageX * pixelRatio
+    let startY = md.pageY * pixelRatio
     // Calculate delta with mousemove until mouseup
     let prevX = startX
     let prevY = startY
 
     return mouseMoves
       .map(function (e) {
-        let curX = e.clientX * pixelRatio
-        let curY = e.clientY * pixelRatio
+        let curX = e.pageX * pixelRatio
+        let curY = e.pageY * pixelRatio
 
         let delta = {
           left: curX - startX,
@@ -33,7 +33,7 @@ export function mouseDrags (mouseDowns$, mouseUps, mouseMoves, settings) {
   })
 }
 
-export function touchDrags (touchStarts$, touchEnds$, touchMoves$, settings) {
+function touchDrags (touchStarts$, touchEnds$, touchMoves$, settings) {
   const {pixelRatio} = settings
   return touchStarts$
     .flatMap(function (e) {
@@ -67,7 +67,7 @@ export function touchDrags (touchStarts$, touchEnds$, touchMoves$, settings) {
 
 /* drag move interactions press & move(continuously firing)
 */
-export function drags ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touchEnds$, longTaps$, touchMoves$}, settings) {
+function drags ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touchEnds$, longTaps$, touchMoves$}, settings) {
   touchMoves$ = touchMoves$.filter(t => t.touches.length === 1)
   const drags$ = merge(
     mouseDrags(mouseDowns$, mouseUps$, mouseMoves$, settings),
@@ -80,3 +80,5 @@ export function drags ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touch
 
   return drags$
 }
+
+module.exports = {mouseDrags, touchDrags, drags}

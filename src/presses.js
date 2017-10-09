@@ -1,5 +1,5 @@
-import { just, merge, empty } from 'most'
-import { exists, isMoving } from './utils'
+const { just, merge, empty } = require('most')
+const { exists, isMoving } = require('./utils')
 /* alternative "clicks" (ie mouseDown -> mouseUp ) implementation, with more fine
 grained control
 */
@@ -16,7 +16,7 @@ function basePresses ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touchE
     .flatMap(function (downEvent) {
       return merge(
         just(downEvent),
-        //moves$.take(1).flatMap(x => empty()).timestamp(), // Skip if we get a movement before a mouse up
+        // moves$.take(1).flatMap(x => empty()).timestamp(), // Skip if we get a movement before a mouse up
         ends$.take(1).timestamp()
       )
     })
@@ -51,9 +51,8 @@ function basePresses ({mouseDowns$, mouseUps$, mouseMoves$, touchStarts$, touchE
     .multicast()
 }
 
-export function presses (baseInteractions, settings) {
+function presses (baseInteractions, settings) {
   const presses$ = basePresses(baseInteractions, settings)
-
 
   /*
   // exploring of more composition based system : much clearer, but needs work
@@ -87,3 +86,5 @@ export function presses (baseInteractions, settings) {
 
   return presses$
 }
+
+module.exports = {presses}
