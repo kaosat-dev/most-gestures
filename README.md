@@ -75,6 +75,13 @@ this creates an object containing the low level streams (mouseDowns$, mouseUps$ 
 from a DOM element, you usually don't want to use this directly, use the following
 function instead.
 
+**options** allows you to refine the gestures by modifying the following parameters:
+> Note: these will also get passed along correctly if set on the pointerGestures function below
+- passiveEventsHandlers: true:  Whenever possible make event listeners passive 
+ (see here https://developers.google.com/web/updates/2016/06/passive-event-listeners for more details)
+- preventScroll: true : Prevent all forms of scrolling on the target element
+- preventMenu: true: Prevent default right click menu on the target element
+
 ### pointerGestures(baseInteractionsOrElement, options)
 
 you can either pass in a reference to a dom element or the output from `baseInteractionsFromEvents(element)`
@@ -96,6 +103,7 @@ they are all observables , so [the power is yours](https://github.com/cujojs/mos
  - zoomMultiplier: (default: 200): zoomFactor for normalized interactions across browsers
  - pinchThreshold: (default: 4000) The minimum amount in pixels squared the inputs must move until it is fired.
  - pixelRatio : (default: window.pixelRatio if available)
+
 
 
 examples :
