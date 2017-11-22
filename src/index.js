@@ -5,45 +5,57 @@ const { taps } = require('./taps')
 const { drags } = require('./drags')
 const { zooms } = require('./zooms')
 
+/**
+ * returns an object of base interactions from dom events, on the target element.
+ * @param {DomElement} targetEl - The dom element to attach events handlers to
+ * @param {Object} options
+ * @param {Boolean} options.passiveEventsHandlers=true  Whenever possible make event listeners passive 
+ * (see here https://developers.google.com/web/updates/2016/06/passive-event-listeners for more details)
+ * @param {Boolean} options.preventScroll=true Prevent all forms of scrolling on the target element
+ * @param {Boolean} options.preventMenu=true Prevent default right click menu on the target element
+ * @returns {Object}
+ */
 function baseInteractionsFromEvents (targetEl, options) {
   const defaults = {
-    preventScroll: true
+    passiveEventsHandlers: true,
+    preventScroll: true,
+    preventMenu: true
   }
   options = Object.assign({}, defaults, options)
+  const {passiveEventsHandlers, preventScroll, preventMenu} = options
 
-  const mouseDowns$ = fromEvent('mousedown', targetEl)
-  const mouseUps$ = fromEvent('mouseup', targetEl)
-  // const mouseLeaves$ = fromEvent('mouseleave', targetEl).merge(fromEvent('mouseout', targetEl))
-  const mouseMoves$ = fromEvent('mousemove', targetEl) // .takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
-  const rightClicks$ = fromEvent('contextmenu', targetEl).tap(preventDefault) // disable the context menu / right click
+  const mouseDowns$ = fromEvent('mousedown', targetEl, {passive: passiveEventsHandlers, capture: false})
+  const mouseUps$ = fromEvent('mouseup', targetEl, {passive: passiveEventsHandlers, capture: false})
+  // const mouseLeaves$ = fromEvent('mouseleave', targetEl, {passive:true,capture:false}).merge(fromEvent('mouseout', targetEl, {passive:true,capture:false}))
+  const mouseMoves$ = fromEvent('mousemove', targetEl, {passive: passiveEventsHandlers, capture: false}) // .takeUntil(mouseLeaves$) // altMouseMoves(fromEvent(targetEl, 'mousemove')).takeUntil(mouseLeaves$)
+  const rightClicks$ = fromEvent('contextmenu', targetEl, {passive: !options.preventMenu, capture: false})
 
-  const touchStarts$ = fromEvent('touchstart', targetEl)
-  const touchMoves$ = fromEvent('touchmove', targetEl)
-  const touchEnds$ = fromEvent('touchend', targetEl)
-
-  // const gestureChange$ = fromEvent('gesturechange', targetEl)
-  // const gestureStart$ = fromEvent('gesturestart', targetEl)
-  // const gestureEnd$ = fromEvent('gestureend', targetEl)
+  const touchStarts$ = fromEvent('touchstart', targetEl, {passive: passiveEventsHandlers, capture: false})
+  const touchMoves$ = fromEvent('touchmove', targetEl, {passive: passiveEventsHandlers, capture: false})
+  const touchEnds$ = fromEvent('touchend', targetEl, {passive: passiveEventsHandlers, capture: false})
 
   const pointerDowns$ = merge(mouseDowns$, touchStarts$) // mouse & touch interactions starts
   const pointerUps$ = merge(mouseUps$, touchEnds$) // mouse & touch interactions ends
   const pointerMoves$ = merge(mouseMoves$, touchMoves$.filter(t => t.touches.length === 1))
 
-  function preventScroll (targetEl) {
-    fromEvent('mousewheel', targetEl).forEach(preventDefault)
-    fromEvent('DOMMouseScroll', targetEl).forEach(preventDefault)
-    fromEvent('wheel', targetEl).forEach(preventDefault)
-    fromEvent('touchmove', targetEl).forEach(preventDefault)
+  function preventAllScrolls (targetEl) {
+    fromEvent('mousewheel', targetEl, {passive: false, capture: false}).forEach(preventDefault)
+    fromEvent('DOMMouseScroll', targetEl, {passive: false, capture: false}).forEach(preventDefault)
+    fromEvent('wheel', targetEl, {passive: false, capture: false}).forEach(preventDefault)
+    fromEvent('touchmove', targetEl, {passive: false, capture: false}).forEach(preventDefault)
   }
 
-  if (options.preventScroll) {
-    preventScroll(targetEl)
+  if (preventScroll) {
+    preventAllScrolls(targetEl, {passive: passiveEventsHandlers, capture: false})
+  }
+  if (preventMenu) {
+    rightClicks$.forEach(preventDefault)
   }
 
   const wheel$ = merge(
-    fromEvent('wheel', targetEl),
-    fromEvent('DOMMouseScroll', targetEl),
-    fromEvent('mousewheel', targetEl)
+    fromEvent('wheel', targetEl, {passive: passiveEventsHandlers, capture: false}),
+    fromEvent('DOMMouseScroll', targetEl, {passive: passiveEventsHandlers, capture: false}),
+    fromEvent('mousewheel', targetEl, {passive: passiveEventsHandlers, capture: false})
   ).map(normalizeWheel)
 
   return {
@@ -63,6 +75,18 @@ function baseInteractionsFromEvents (targetEl, options) {
     pointerMoves$}
 }
 
+/**
+ * returns an object of pointer gestures.
+ * @param {DomElement} input - either the dom element to attach events handlers to or the result from baseInteractionsFromEvents
+ * @param {Object} options
+ * @param {Integer} options.multiTapDelay=250  delay between clicks/taps
+ * @param {Integer} options.longPressDelay=250 delay after which we have a 'hold' gesture
+ * @param {Float} options.maxStaticDeltaSqr=100 maximum delta (in pixels squared) above which we are not static ie cursor changed places
+ * @param {Float} options.zoomMultiplier=200 zoomFactor for normalized interactions across browsers
+ * @param {Float} options.pinchThreshold=4000 The minimum amount in pixels the inputs must move until it is fired.
+ * @param {Integer} options.pixelRatio=window.devicePixelRatio or 1 : the pixel ratio to use
+ * @returns {Object}
+ */
 function pointerGestures (input, options) {
   let baseInteractions = 'addEventListener' in input ? baseInteractionsFromEvents(input, options) : input
 
